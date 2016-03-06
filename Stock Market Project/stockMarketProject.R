@@ -1,8 +1,39 @@
-# loading our data
+# Welcome to our Stock Market Project
+# We will be using Time Series and Regression Analysis 
+# To analyze trends in stock market indexes against various economic indicators
+
+# Stock Market Indexes we will analyze:
+
+# 	NASDAQ
+# 	S & P 500
+# 	NYSE
+
+# Economic Indicators we are analyzing:
+
+# 	m1
+#	m2
+#	consumerSentiment
+#	inflation
+#	imports
+#	oilPrices
+#	ppi
+#	exports
+#	cpi
+#	unemploymentRate
+#	fedFunds
+#	capUtilization
+#	sp_500Dividends
+#	gdp_us
+#	nasdaq
+#	nyse
+#	sp_500
+
+# Let's get to it!
+# Loading our Data
 	
 	timeSeries <- read.csv("/Users/njfritter/myProjects/learningR/econIndicators.csv")
 
-# download libraries (skip if you have already downloaded)
+# Download these libraries (skip if you have already downloaded)
 
 	install.packages("forecast")
 	install.packages("astsa")
@@ -11,7 +42,7 @@
 	install.packages("MTS")
 	install.packages("plm")
 
-# load the above  libraries
+# Load the above libraries locally for your project
 	
 	require(forecast)
 	require(astsa)
@@ -20,12 +51,13 @@
 	require(MTS)
 	require(plm)
 
-# check top entries and structure
+# Checking the top entries and structure to make sure the data loaded properly
 	
 	head(timeSeries)
 	str(timeSeries)
 
-# running ts function on stock indexes and indicator, with start parameter and frequency
+# Running ts function on stock indexes and Indicators, with start parameter and frequency
+# Turns every variable into a Time Series object
 	
 	m1 <- ts(timeSeries$m1, start=c(1995, 1), freq=12)
 	m2 <- ts(timeSeries$m2, start=c(1995, 1), freq=12)
@@ -40,14 +72,15 @@
 	unemploymentRate <- ts(timeSeries$unemploymentRate, start=c(1995, 1), freq=12)
 	dividends <- ts(timeSeries$sp_500Dividends, start=c(1995, 1), freq=12)
 	inflation <- ts(timeSeries$inflation, start=c(1995, 1), freq=12)
+	gdp_us <- ts(timeSeries$gdp_us, start=c(1995, 1), freq=12)
 	sp_500 <- ts(timeSeries$sp_500, start=c(1995, 1), freq=12)
 	nasdaq <- ts(timeSeries$nasdaq, start=c(1995, 1), freq=12)
 	nyse <- ts(timeSeries$nyse, start=c(1995, 1), freq=12)
-	gdp_us <- ts(timeSeries$gdp_us, start=c(1995, 1), freq=12)
+	
 
 
 
-# printing some data
+# Print out some of the Time Series variables
 
 	print("Here are nasdaq values for 1995-2015! ---------------------------------------------------")
 	nasdaq
@@ -61,35 +94,46 @@
 	print("Here are ppi values for 1995-2015! ---------------------------------------------------")
 	ppi
 
-# printing mean & standard deviation of sp_500
+# Print the Mean & Standard Deviation of sp_500
 
-	print("This is the average sp_500 value from years 1995 to 2015 ---------------------------------------------------")
 	mean(sp_500)
 
-	print("This is the standard deviation of sp_500 values from years 1995 to 2015 ---------------------------------------------------")
 	sd(sp_500)
 
-# plotting sp_500
+# Plotting sp_500
 	
-	print("Outputting plot of sp_500: ")
 	plot.ts(sp_500, main="Plotting sp_500 values")
 
-# plotting nasdaq
+# Plotting nasdaq
 	
-	print("Outputting plot of NASDAQ: ")
 	plot.ts(nasdaq, main="Plotting NASDAQ values")
 
-# plotting nyse
+# Plotting nyse
 	
-	print("Outputting plot of NYSE: ")
 	plot.ts(nyse, main="Plotting NYSE values")
 
+# Plotting the rest of the economic indicators
 
-# FIRST SECTION: NASDAQ LINEAR MODEL
+	plot.ts(m1)
+	plot.ts(m2)
+	plot.ts(consumerSentiment)
+	plot.ts(inflation)
+	plot.ts(imports)
+	plot.ts(oilPrices)
+	plot.ts(ppi)
+	plot.ts(exports)
+	plot.ts(cpi)
+	plot.ts(unemploymentRate)
+	plot.ts(fedFunds)
+	plot.ts(capUtilization)
+	plot.ts(sp_500Dividends)
+	plot.ts(gdp_us)
+
+# FIRST SECTION: NASDAQ LINEAR REGRESSION MODEL AS A FUNCTION OF ECONOMIC INDICATORS
 
 
-# linear model on nasdaq as a function of every economic indicator
-# every variable is accessed as a time series object from the main data set
+# Linear model on nasdaq as a function of every economic indicator
+# Every variable is accessed as a time series object from the main data set
 # We will be using backwards elimination to find the most significant economic indicators
 
 	nasdaq_fit1 <- lm(nasdaq ~ m1 + m2 + consumerSentiment + imports + oilPrices + ppi + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse, data = timeSeries)
@@ -122,14 +166,17 @@
 # So the above fit is in terms of only significant variables
 
 
-# Now we will plot and obtain a confidence interval for the significant variables vs. the NYSE
+# Looks like we got a fit!
 
 	final_nasdaq_fit <- nasdaq_fit5
+
+# Now we will plot and obtain a confidence interval for the significant variables vs. the NYSE
+
 	plot(final_nasdaq_fit)
 	confint(final_nasdaq_fit)
 
 
-# NEXT SECTION: S & P 500 LINEAR MODEL
+# NEXT SECTION: S & P 500 LINEAR REGRESSION MODEL AS A FUNCTION OF ECONOMIC INDICATORS
 
 
 # Next we will do the linear fit for the S & P 500
@@ -187,14 +234,17 @@
 # Now the intercept value of AIC is lower than any other variable
 # Thus the model above is in terms of the most significant variables
 
-# Now we will plot and obtain a confidence interval for the significant variables vs. the S & P 500
+# We got a fit!
 
 	final_sp500_fit <- sp500_fit7
+
+# Now we will plot and obtain a confidence interval for the significant variables vs. the S & P 500
+
 	plot(final_sp500_fit)
 	confint(final_sp500_fit)
 
 
-# LAST SECTION: NYSE LINEAR MODEL
+# NEXT SECTION: NYSE LINEAR REGRESSION MODEL AS A FUNCTION OF ECONOMIC INDICATORS
 
 
 # Last we will analyze the nyse 
@@ -239,15 +289,73 @@
 # Now all of the variables have p values < 0.01
 # Therefore the model above is based solely on significant variables
 
-# Now we will plot and obtain a confidence interval for the significant variables vs. the NYSE
+# Yay we have a fit!
 
 	final_nyse_fit <- nyse_fit7
+
+# Now we will plot and obtain a confidence interval for the significant variables vs. the NYSE
+
 	plot(final_nyse_fit)
 	confint(final_nyse_fit)
 
 # Convert the timeSeries data into a dataframe
 
-#timeSeries_df <- data.frame(m1, m2, consumerSentiment, imports, exports, oilPrices, )
+	dataMaster_df <- data.frame(m1, m2, consumerSentiment, imports, inflation, oilPrices, ppi, exports, cpi, unemploymentRate, fedFunds, capUtilization , sp_500Dividends, nasdaq, nyse, sp_500, gdp_us, housingIndex)
+
+# Now let's play with some Panel Data Models!
+
+
+# NEXT SECTION: PANEL DATA MODELS
+
+
+# First let's assign some variables
+# "cbind" takes multiple variables and combines them by columns or rows
+# In this case our common variables are year/month
+
+	Y <- cbind(nasdaq)
+	X <- cbind(m1, m2, consumerSentiment, imports, inflation, oilPrices, ppi, exports, cpi, unemploymentRate, fedFunds, capUtilization, sp_500Dividends, nyse, sp_500, gdp_us)
+
+# Now we will turn our Master data file into panel data
+
+	pdata <- plm.data(timeSeries, index=c("year", "month"))
+
+# Let's get the summaries of the Nasdaq and the Economic Indicators
+
+	summary(X)
+	summary(Y)
+
+# Now let's create a "pooled OLS Estimator"
+
+	pooling <- plm(Y ~ X, data = pdata, model = "pooling")
+	summary(pooling)
+
+# Next we will create a "between estimator"
+
+	between <- plm(Y ~ X, data = pdata, model = "between")
+	summary(between)
+
+# Next up we will make a "first differences estimator"
+
+	firstDiff <- plm(Y ~ X, data = pdata, model = "fd")
+	summary(firstDiff)
+
+# Now is the "fixed effects" or "within" estimator
+
+	within <- plm(Y ~ X, data = pdata, model = "within")
+	summary(within)
+
+# Last we have the "random effects" estimator
+
+	random <- plm(Y ~ X, data = pdata, model = "random")
+	summary(random)
+
+# How about we do a Linear Model test for random effects versus pooling??
+
+#	plmtest(pooling)
+
+# Or a Linear Model test for fixed effects/within versus pooling??
+
+#	plmtest(within)
 
 # still to do
 # collaborate with others on project to get best fit data for each one
