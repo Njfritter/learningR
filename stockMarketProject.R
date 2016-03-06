@@ -6,13 +6,19 @@
 
 	install.packages("forecast")
 	install.packages("astsa")
-	install.packages("ts")
+	install.packages("ggplot2")
+	install.packages("car")
+	install.packages("MTS")
+	install.packages("plm")
 
-# load the abovelibraries
+# load the above  libraries
 	
 	require(forecast)
 	require(astsa)
-	require(ts)
+	require(ggplot2)
+	require(car)
+	require(MTS)
+	require(plm)
 
 # check top entries and structure
 	
@@ -78,6 +84,10 @@
 	print("Outputting plot of NYSE: ")
 	plot.ts(nyse, main="Plotting NYSE values")
 
+
+# FIRST SECTION: NASDAQ LINEAR MODEL
+
+
 # linear model on nasdaq as a function of every economic indicator
 # every variable is accessed as a time series object from the main data set
 # We will be using backwards elimination to find the most significant economic indicators
@@ -110,6 +120,17 @@
 
 # All p values are now < 0.01
 # So the above fit is in terms of only significant variables
+
+
+# Now we will plot and obtain a confidence interval for the significant variables vs. the NYSE
+
+	final_nasdaq_fit <- nasdaq_fit5
+	plot(final_nasdaq_fit)
+	confint(final_nasdaq_fit)
+
+
+# NEXT SECTION: S & P 500 LINEAR MODEL
+
 
 # Next we will do the linear fit for the S & P 500
 # This time we will use the BIC Method
@@ -166,6 +187,16 @@
 # Now the intercept value of AIC is lower than any other variable
 # Thus the model above is in terms of the most significant variables
 
+# Now we will plot and obtain a confidence interval for the significant variables vs. the S & P 500
+
+	final_sp500_fit <- sp500_fit7
+	plot(final_sp500_fit)
+	confint(final_sp500_fit)
+
+
+# LAST SECTION: NYSE LINEAR MODEL
+
+
 # Last we will analyze the nyse 
 # linear model on nyse as function of every economic indicator
 
@@ -177,42 +208,49 @@
 # According to the summary, cpi has the highest p value
 # cpi will be dropped
 
-	nyse_fit2<- lm(nyse ~ . - cpi, data = timeSeries)
+	nyse_fit2 <- lm(nyse ~ . - cpi, data = timeSeries)
 	summary(nyse_fit2)
 
 # According to the summary, consumerSentiment has the highest p value and will be dropped
 
-	nyse_fit3<- lm(nyse ~ . - cpi - consumerSentiment, data = timeSeries)
+	nyse_fit3 <- lm(nyse ~ . - cpi - consumerSentiment, data = timeSeries)
 	summary(nyse_fit3)
 
 # According to the summary, sp_500 dividends have the highest p value and will be dropped
 
-	nyse_fit4<- lm(nyse ~ . - cpi - consumerSentiment - dividends, data = timeSeries)
+	nyse_fit4 <- lm(nyse ~ . - cpi - consumerSentiment - dividends, data = timeSeries)
 	summary(nyse_fit4)
 
 # According to the summary, imports have the highest p value and will be dropped
 
-	nyse_fit5<- lm(nyse ~ . - cpi - consumerSentiment - dividends - imports, data = timeSeries)
+	nyse_fit5 <- lm(nyse ~ . - cpi - consumerSentiment - dividends - imports, data = timeSeries)
 	summary(nyse_fit5)
 
 # According to the summary, US GDP has the highest p value and will be removed
 
-	nyse_fit6<- lm(nyse ~ . - cpi - consumerSentiment - dividends - imports - gdp_us, data = timeSeries)
+	nyse_fit6 <- lm(nyse ~ . - cpi - consumerSentiment - dividends - imports - gdp_us, data = timeSeries)
 	summary(nyse_fit6)
 
 # According to the summary, inflation has the highest p value and will be dropped
 
-	nyse_fit7<- lm(nyse ~ . - cpi - consumerSentiment - dividends - imports - gdp_us - inflation, data = timeSeries)
+	nyse_fit7 <- lm(nyse ~ . - cpi - consumerSentiment - dividends - imports - gdp_us - inflation, data = timeSeries)
 	summary(nyse_fit7)
 
 # Now all of the variables have p values < 0.01
 # Therefore the model above is based solely on significant variables
 
+# Now we will plot and obtain a confidence interval for the significant variables vs. the NYSE
+
+	final_nyse_fit <- nyse_fit7
+	plot(final_nyse_fit)
+	confint(final_nyse_fit)
+
 # Convert the timeSeries data into a dataframe
 
-#	timeSeries_df <- data.frame(m1, m2, consumerSentiment, imports, exports, oilPrices, )
+#timeSeries_df <- data.frame(m1, m2, consumerSentiment, imports, exports, oilPrices, )
+
 # still to do
 # collaborate with others on project to get best fit data for each one
-# do time series calculations for each one
+# do multivariate/univariate models and/or panel data???
 # learn ts(), lm(), summary(), arima(), 
 # use datacamp.com for R tutorial
