@@ -375,9 +375,14 @@
 # ARIMA stands for Auto-Regression Integrating Moving Average
 # We will be using the auto.arima() on the three stock indexes
 
-
+# Regression analysis is done
+# Now we need to use our models to predict values for current stock market data
 
 # still to do
 # do multivariate/univariate models
-# learn ts(), lm(), summary(), arima(), 
+# Better TS models for the 3 indeces (Possible transformations)
+# Look at residuals (and explain the results)
+# Panel Data vs Multivariate Time Series
+# Find Correlation of remaining significant variables via cross validation
+# learn ts(), lm(), summary(), arima(), plmtest()
 # use datacamp.com for R tutorial
