@@ -136,31 +136,41 @@
 # Every variable is accessed as a time series object from the main data set
 # We will be using backwards elimination to find the most significant economic indicators
 
-	nasdaq_fit1 <- lm(nasdaq ~ m1 + m2 + consumerSentiment + imports + oilPrices + ppi + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse, data = timeSeries)
+	nasdaq_fit1 <- lm(nasdaq ~ m1 + m2 + consumerSentiment + imports + inflation + oilPrices + ppi + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse + sp_500 + gdp_us, data = timeSeries)
 	print("Printing summary of initial regression on economic indicators vs NASDAQ ---------------------------------------------------")
 	summary(nasdaq_fit1)
 
-# Looking at the summary for the fit, m2 has the highest p value
-# Using the process of backwards elimination, we will drop m2
-
-	nasdaq_fit2 <- lm(nasdaq ~ m1 + consumerSentiment + imports + oilPrices + ppi + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse, data = timeSeries)
+# Looking at the summary for the fit, consumerSentiment has the highest p value
+# Using the process of backwards elimination, we will drop consumerSentiment
+	nasdaq_fit2 <- lm(nasdaq ~ m1 + m2 + imports + inflation + oilPrices + ppi + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse + sp_500 + gdp_us, data = timeSeries)
 	summary(nasdaq_fit2)
 
-# Looking again, we find that ppi has the highest p value; it will be dropped
+# Looking again, we find that gdp_us has the highest p value; it will be dropped
 
-	nasdaq_fit3 <- lm(nasdaq ~ m1 + consumerSentiment + imports + oilPrices + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse, data = timeSeries)
+	nasdaq_fit3 <- lm(nasdaq ~ m1 + m2 + imports + inflation + oilPrices + ppi + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse + sp_500, data = timeSeries)
 	summary(nasdaq_fit3)
 
-# Next variable with highest p value that we will drop is: imports
+# Next variable with highest p value that we will drop is: ppi
 
-	nasdaq_fit4 <- lm(nasdaq ~ m1 + consumerSentiment + oilPrices + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse, data = timeSeries)
+	nasdaq_fit4 <- lm(nasdaq ~ m1 + m2 + imports + inflation + oilPrices + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse + sp_500, data = timeSeries)
 	summary(nasdaq_fit4)
 
-# Next variable to be dropped with highest p value: oil prices
+# Next variable to be dropped with highest p value: cpi
 
-	nasdaq_fit5 <- lm(nasdaq ~ m1 + consumerSentiment + exports + cpi + unemploymentRate + fedFunds + capUtilization + nyse, data = timeSeries)
-	print("Printing summary of final regression on economic indicators vs NASDAQ ---------------------------------------------------")
+	nasdaq_fit5 <- lm(nasdaq ~ m1 + m2 + imports + inflation + oilPrices + exports + unemploymentRate + fedFunds + capUtilization + nyse + sp_500, data = timeSeries)
 	summary(nasdaq_fit5)
+
+# Next variable to be dropped with highest p value: m2
+
+	nasdaq_fit6 <- lm(nasdaq ~ m1 + imports + inflation + oilPrices + exports + unemploymentRate + fedFunds + capUtilization + nyse + sp_500, data = timeSeries)
+	summary(nasdaq_fit6)
+
+
+# Next variable to be dropped with highest p value: inflation
+
+	nasdaq_fit7 <- lm(nasdaq ~ m1 + imports + oilPrices + exports + unemploymentRate + fedFunds + capUtilization + nyse + sp_500, data = timeSeries)
+	print("Printing summary of final regression on economic indicators vs NASDAQ ---------------------------------------------------")
+	summary(nasdaq_fit7)	
 
 # All p values are now < 0.01
 # So the above fit is in terms of only significant variables
@@ -168,7 +178,7 @@
 
 # Looks like we got a fit!
 
-	final_nasdaq_fit <- nasdaq_fit5
+	final_nasdaq_fit <- nasdaq_fit7
 
 # Now we will plot and obtain a confidence interval for the significant variables vs. the NYSE
 
@@ -357,8 +367,17 @@
 
 #	plmtest(within)
 
+
+# THIRD SECTION: ARIMA MODELS
+
+
+# We will now be dabbling with Arima models
+# ARIMA stands for Auto-Regression Integrating Moving Average
+# We will be using the auto.arima() on the three stock indexes
+
+
+
 # still to do
-# collaborate with others on project to get best fit data for each one
-# do multivariate/univariate models and/or panel data???
+# do multivariate/univariate models
 # learn ts(), lm(), summary(), arima(), 
 # use datacamp.com for R tutorial
