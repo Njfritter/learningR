@@ -361,22 +361,46 @@
 
 # How about we do a Linear Model test for random effects versus pooling??
 
-#	plmtest(pooling)
+	plmtest(pooling)
 
 # Or a Linear Model test for fixed effects/within versus pooling??
 
-#	plmtest(within)
+	plmtest(within)
 
+# Huh
+	
+	pFtest(fixed, poolingx)
+
+# Regression analysis is done
+# Now we need to use our models to predict values for current stock market data
 
 # THIRD SECTION: ARIMA MODELS
-
 
 # We will now be dabbling with Arima models
 # ARIMA stands for Auto-Regression Integrating Moving Average
 # We will be using the auto.arima() on the three stock indexes
+# Gives a rough best fit model with autoregressive and moving average coefficients for a best-fit regression model
 
-# Regression analysis is done
-# Now we need to use our models to predict values for current stock market data
+	arima_nasdaq_model <- auto.arima(timeSeries$nasdaq)
+	arima_sp500_model <- auto.arima(timeSeries$sp_500)
+	arima_nyse_model <- auto.arima(timeSeries$nyse)
+
+# Now let's do some sarima
+# Stands for Seasonal Auto-Regression Integrated Moving Average 
+# Is able to detect yearly/quarterly seasonality in data along with the arima functions
+
+	sarima_nasdaq_model <- sarima(timeSeries$nasdaq, p = 1, q = 1, d = 2)
+	sarima_sp500_model <- sarima(timeSeries$sp_500, p = 1, q = 1, d = 2)
+	sarima_nyse_model <- sarima(timeSeries$nyse, p = 1, q = 1, d = 2)
+
+# Now that we have rough models for the seasonality, we will use a forecasting function to predict future values
+# by using sarima.for()
+
+	sarima.for(timeSeries$nasdaq, n.ahead = 12, p = 1, q = 1, d = 2)
+	sarima.for(timeSeries$sp_500, n.ahead = 12, p = 1, q = 1, d = 2)
+	sarima.for(timeSeries$nyse, n.ahead = 12, p = 1, q = 1, d = 2)
+
+
 
 # still to do
 # do multivariate/univariate models
