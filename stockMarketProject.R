@@ -41,6 +41,8 @@
 	install.packages("car")
 	install.packages("MTS")
 	install.packages("plm")
+	install.packages("caret")
+	install.packages("DAAG")
 
 # Load the above libraries locally for your project
 	
@@ -50,6 +52,16 @@
 	require(car)
 	require(MTS)
 	require(plm)
+	library(caret)
+
+# required for cross-validation
+
+	require(caret)
+	require(DAAG)
+
+# outputting work
+
+	pdf("linearmodel_nasdaq.pdf")
 
 # Checking the top entries and structure to make sure the data loaded properly
 	
@@ -311,6 +323,24 @@
 # Convert the timeSeries data into a dataframe
 
 	dataMaster_df <- data.frame(m1, m2, consumerSentiment, imports, inflation, oilPrices, ppi, exports, cpi, unemploymentRate, fedFunds, capUtilization , sp_500Dividends, nasdaq, nyse, sp_500, gdp_us, housingIndex)
+
+# CROSS VALIDATION
+# We will use the CVlm() function
+# Starting with Nasdaq
+
+	nasdaq_model_cv <- CVlm (data = timeSeries, form.lm = formula(final_nasdaq_fit), m = 3, dots = FALSE, seed = 29, plotit = c("Observed", "Residual"), main="Cross-validation for the NASDAQ Model", legend.pos="topleft", printit=TRUE)
+
+# The graph will output; besides for some outliers (extreme points in the Y direction), the model fits the data well
+# Next up let's do the S & P 500?
+
+	sp500_model_cv <- CVlm (data = timeSeries, form.lm = formula(final_sp500_fit), m = 3, dots = FALSE, seed = 29, plotit = c("Observed", "Residual"), main="Cross-validation for the S & P 500 Model", legend.pos="topleft", printit=TRUE)
+
+# Looking at the graph we see 
+# Last but not least: The New York Stock Exchange
+
+	nyse_model_cv <- CVlm (data = timeSeries, form.lm = formula(final_nyse_fit), m = 3, dots = FALSE, seed = 29, plotit = c("Observed", "Residual"), main="Cross-validation for the NYSE Model", legend.pos="topleft", printit=TRUE)
+
+# Looking at the graph, we find no outliers or leverage points. This model fits the data well
 
 # Now let's play with some Panel Data Models!
 
